@@ -1,0 +1,155 @@
+README for
+
+ExtZSQLMethod
+
+J Cameron Cooper (extzsql@jcameroncooper.com)
+
+for "Connexions Project, Rice University":http://cnx.rice.edu
+
+Preface
+
+ Say one has a Python Product that uses some ZSQL Methods. Currently,
+ you must do something like::
+
+  def addSQLQueries(self):
+      self.sqlStatement1=SQL('sqlStatement1', '', self.connection,
+                             'id:string', _sqlStatement1)
+
+  _sqlStatement1="""
+  SELECT * FROM table
+  """
+
+ This is
+ annoying.
+
+  * Changing the statement requires refreshing the product.
+
+  * Changing the statement also requires re-instantiating all objects of
+    that product.
+
+  * New 'SQL' objects (ZSQL methods) must be created for each
+    object. Imagine if you have lots of statements and lots of objects.
+
+  * You must re-initialize all statements to change the connection.
+
+  * You must have an extant connection to create the objects.
+
+ What we would rather do is something like::
+
+  factory = ExtZSQLFactory.getFactory('connection1')
+  sqlStatement1 = factory.getStatement('sqlStatement1.sql')
+
+ where 'sqlStatement1.sql' is a file somewhere.
+
+ In this manner, only one 'SQL' object exists for each statement/file;
+ all can be controlled by the factory; the source can be on the file
+ system (or possibly elsewhere), and refreshed by the factory.
+ There is also only one factory for each connection.
+
+ Adding SQL queries that live on the file system can also be handy, and
+ is an easy byproduct of the solution above.
+
+Usage
+
+ Usage is simple, but some rules must be followed due to the
+ intricacies of Zope's persistence machinery.
+
+ To get a factory, simply say::
+
+  factory = ExtZSQLFactory.getFactory('connection1')
+
+ where 'connection1' is a database connection. This should only be done
+ in the local scope of a method. NOT at package level. NOT at class
+ attribute level. (Actually, package level may be QX, but I encourage
+ you not to play with fire.)
+
+
+ To get an ExtZSQLMethod (which is very much like a regular ZSQLMethod),
+ you say::
+
+  sqlStatement1 = factory.getStatement(os.path.join(sql_dir,'statement1.sql'),self)
+
+ where 'sqlStatement1' will be the resulting SQL-like object, 'sql_dir' is
+ the path to your SQL statement files, and 'statement1.sql' is a file with
+ an SQL statement. You have to give it 'self' for acquisition context.
+
+ A handy sql_dir is the subdirectory 'sql' in your product directory::
+
+  sql_dir = os.path.join(App.Common.package_home(globals()),'sql')
+
+ This must also be done in local scope. Otherwise, you engage the
+ persistence machinery and the factory will lose track of its statements
+ upon restart of the server. Also, the factory currently will only check for
+ newer versions when you say getStatement, which is an equally good reason
+ to call things on the fly.
+
+
+ The file format is simple::
+
+  PARAMETER_BLOCK
+  SQL_CONTENT
+
+ where PARAMETER_BLOCK looks like::
+
+  <dtml-comment>
+  PARAMETERS
+  </dtml-comment>
+
+ PARAMETERS is zero or more lines that look like::
+
+  name:value
+
+ These are parameters to the ZSQLMethod like normally set TTW in the
+ 'Edit' and 'Advanced' tabs. These are
+
+  - title
+
+  - connection_id
+
+  - arguments
+
+  - max_rows
+
+  - max_cache
+
+  - cache_time
+
+  - class_name
+
+  - class_file
+
+ SQL_CONTENT is simply a ZSQL statement.
+
+ Examples::
+
+  <dtml-comment>
+  title:test2
+  </dtml-comment>
+  select * from test
+
+ Al
+
+  <dtml-comment>
+  title:dogs
+  arguments: type:string age:int
+  max_rows:100
+  max_cache:100
+  cache_time:10
+  </dtml-comment>
+  select dog_id,
+         name,
+         personality,
+         trained_p,
+         color
+  from  dogs
+  where dog_type = <dtml-sqlvar type type="string">
+  and   dog_age = <dtml-sqlvar age type="int">
+
+Problems
+
+ Please see the ISSUES file for known issues with this product.
+
+ If you discover any bugs, dislike any rough spots, have any feature
+ requests, or wish to congratulate/blame the author, please feel free
+ to contact me at the address atop this README. The only way I'll
+ know what features to add or bugs to fix is if you tell me.

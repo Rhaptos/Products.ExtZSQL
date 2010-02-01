@@ -1,0 +1,55 @@
+ISSUES with ExtZSQL
+
+ This product has had a low number of relases, due to the fact
+ that no bugs have been observed and few features have been
+ requested. This suggests that it is stable and works, but this
+ is not guaranteed: It works for me, it may not work for you.
+
+
+ Product Refresh
+
+  Product refresh works spottily if at all wrt the factory. As I learn
+  more about this, I'll fix it.
+
+
+ Security and Polish
+
+  Little if any thought has been given to security and error
+  handling. Let me know about any rough edges.
+
+
+ Persistence and Memory Leaks
+
+  If ExtZSQL Methods are kept persistently (simply by referring to them
+  in class attributes) the factory will lose track of them on server
+  restart, thus negating all the factory goodness. Following the calling
+  procedures (see README) will fix this.
+
+  It is possible to allow an object to be handed back to the factory,
+  but I have no use for this. Let me know if you do.
+
+  There is also an off-chance for memory leaks, both in the ZODB and
+  in-process. I think I understand what is happening and that everything
+  is under control, but problems are definitely possible. If you learn
+  anything one way or the other with regard to ZODB bloating (either
+  packable or not) or real memory leaks, please inform me.
+
+
+ Editability
+
+  Unlike other FS-products, ExtZSQL doesn't allow editing. This can be
+  done, either like External File or like a CMF FSObject (by cloning).
+  Again, this feature doesn't exist, because I don't need it. It can be
+  added.
+
+
+ Statement Refresh
+
+  Currently refresh checking only takes place when getStatement is
+  invoked on the factory. One could potentially do it on __call__ but
+  this is not done. It can be done manually on TTW objects through the
+  refresh tab (bug me if I release it without such a thing) or
+  through the APIs of either factory or method.
+
+  And yes, I do know that after refresh the tabs are gone. I don't know
+  why.

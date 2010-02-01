@@ -1,0 +1,16 @@
+INSTALLing ExtZSQL
+
+ This product installs like most other Zope products. Simply uncompress
+ the distribution file and place the resultant 'ExtZSQL' directory
+ in your products folder.
+
+ In a simple Zope install, based at ZOPE, this is located at::
+
+  ZOPE/lib/python/Products
+
+ In an instance_home type installation, where your instance is at
+ 'INSTANCE', this it located at::
+
+  INSTANCE/Products
+
+ Then restart Zope, and everything should be done.

@@ -1,0 +1,19 @@
+Version 0.9
+
+ - Brain support added
+
+ - Readme reformatted for STX
+
+ - Better icon
+
+ - Version number bumped to reflect state
+
+Version 0.1
+
+ Initial release. Contains
+
+  - factory/controller with refresh check
+
+  - TTW type
+
+  - full usage and concept documentation
