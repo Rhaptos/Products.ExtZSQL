@@ -141,8 +141,8 @@ class ExtZSQLFactory:
         """Create a hopefully unique id for our (mostly anonymous) ExtZSQLMethods.
         """
         # got this from a runyaga post on ZopeLabs. so blame him.
-        import whrandom
+        import random
         from DateTime import DateTime
 
         return str(DateTime().strftime('%Y%m%d%H%M%S')
-                   ) + "." + str(whrandom.random())[2:]
+                   ) + "." + str(random.random())[2:]
